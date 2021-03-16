@@ -1,0 +1,99 @@
+package main
+
+import (
+	"fmt"
+	"reflect"
+	"sync"
+	"sync/atomic"
+)
+
+type Animal struct {
+	Name  string
+	Achan chan int
+	Call  interface{}
+	Num   uint64
+}
+
+func main() {
+	var wg sync.WaitGroup
+	var animals []Animal
+	animals = append(animals, Animal{"cat", make(chan int, 1), callAnimalName, 100})
+	animals = append(animals, Animal{"dog", make(chan int, 1), callAnimalName, 100})
+	animals = append(animals, Animal{"fish", make(chan int, 1), callAnimalName, 98})
+	animals = append(animals, Animal{"pig", make(chan int, 1), callAnimalName2, 100})
+	wg.Add(len(animals))
+	for i := 0; i <= len(animals)-1; i++ {
+		fv := reflect.ValueOf(animals[i].Call)
+		in := make([]reflect.Value, 5)
+		in[0] = reflect.ValueOf(&wg)
+		in[1] = reflect.ValueOf(animals[i].Achan)
+		if len(animals)-1 == i {
+			in[2] = reflect.ValueOf(animals[0].Achan)
+		} else {
+			in[2] = reflect.ValueOf(animals[i+1].Achan)
+		}
+		in[3] = reflect.ValueOf(animals[i].Name)
+		in[4] = reflect.ValueOf(animals[i].Num)
+		go fv.Call(in)
+	}
+
+	animals[0].Achan <- 1
+	wg.Wait()
+}
+
+func callAnimalName(wg *sync.WaitGroup, now, next chan int, animalname string, num uint64) {
+	var catcounter uint64 = 0
+	for {
+		if catcounter >= num {
+			wg.Done()
+			return
+		}
+		<-now
+		fmt.Println(animalname, catcounter)
+		atomic.AddUint64(&catcounter, 1)
+		next <- 1
+	}
+
+}
+func callAnimalName2(wg *sync.WaitGroup, now, next chan int, animalname string, num uint64) {
+	var catcounter uint64 = 0
+	for {
+		if catcounter >= num {
+			wg.Done()
+			return
+		}
+		<-now
+		fmt.Println(animalname, "+++", catcounter)
+		atomic.AddUint64(&catcounter, 1)
+		next <- 1
+	}
+
+}
+
+// func dog(wg *sync.WaitGroup, dogc, fishc chan int) {
+// 	var dogcounter uint64 = 0
+// 	for {
+// 		if dogcounter > 100 {
+// 			wg.Done()
+// 			return
+// 		}
+// 		<-dogc
+// 		fmt.Println("dog")
+// 		atomic.AddUint64(&dogcounter, 1)
+// 		fishc <- 1
+// 	}
+
+// }
+// func fish(wg *sync.WaitGroup, fishc, catc chan int) {
+// 	var fishcounter uint64 = 0
+// 	for {
+// 		if fishcounter > 100 {
+// 			wg.Done()
+// 			return
+// 		}
+// 		<-fishc
+// 		fmt.Println("fish")
+// 		atomic.AddUint64(&fishcounter, 1)
+// 		catc <- 1
+// 	}
+// }
