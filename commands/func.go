@@ -51,7 +51,6 @@ func create(path, project string) (err error) {
 	if err = os.MkdirAll(f.Path, 0755); err != nil {
 		return err
 	}
-
 	return tpl.DirTemplate(path, project, f.Type)
 }
 

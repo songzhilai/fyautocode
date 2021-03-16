@@ -8,6 +8,9 @@ import (
 	"github.com/urfave/cli/v2"
 )
 
+//加载静态文件至二进制
+//go-bindata -o=./asset/asset.go -pkg=asset template/...
+
 func main() {
 	app := cli.NewApp()
 	app.Name = "FYAPI"
