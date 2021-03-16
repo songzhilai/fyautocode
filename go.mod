@@ -1,4 +1,4 @@
-module fyautocode
+module github.com/songzhilai/fyautocode
 
 go 1.14
 
