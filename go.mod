@@ -1,4 +1,4 @@
-module fyapi
+module fyautocode
 
 go 1.14
 

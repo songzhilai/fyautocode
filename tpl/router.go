@@ -1,27 +1,22 @@
 package tpl
 
 import (
-	"fmt"
 	"reflect"
 )
 
+type TemplateBase interface {
+	ReturnInfoStruct(string) map[string]interface{}
+}
+
 //TplTypeAssignment
-func TplTypeAssignment(tplinter interface{}, params ...interface{}) interface{} {
+func TplTypeAssignment(tplinter interface{}, params ...interface{}) map[string]interface{} {
 	in := make([]reflect.Value, len(params))
 	for k, v := range params {
 		in[k] = reflect.ValueOf(v)
 	}
-	switch tplinter.(type) {
-	case GoModTemplate:
-		a := tplinter.(GoModTemplate)
-		reflect.ValueOf(&a).MethodByName("ReturnInfoStruct").Call(in)
-		return a
-	case GoSumTemplate:
-		a := tplinter.(GoSumTemplate)
-		reflect.ValueOf(&a).MethodByName("ReturnInfoStruct").Call(in)
-		return a
-	default:
-		fmt.Println("mobanbucunzai ")
+	base, ok := tplinter.(TemplateBase)
+	if !ok {
+		return make(map[string]interface{})
 	}
-	return tplinter
+	return base.ReturnInfoStruct("123")
 }
