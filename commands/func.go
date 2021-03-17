@@ -2,7 +2,7 @@ package commands
 
 import (
 	"fmt"
-	"fyautocode/tpl"
+	"github.com/songzhilai/fyautocode/tpl"
 	"io/ioutil"
 	"os"
 	"path/filepath"

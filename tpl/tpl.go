@@ -3,7 +3,7 @@ package tpl
 import (
 	"errors"
 	"fmt"
-	"fyautocode/asset"
+	"github.com/songzhilai/fyautocode/asset"
 	"io/ioutil"
 	"os"
 	"path"

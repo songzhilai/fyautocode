@@ -1,7 +1,7 @@
 package main
 
 import (
-	"fyautocode/commands"
+	"github.com/songzhilai/fyautocode/commands"
 	"log"
 	"os"
 
